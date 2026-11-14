@@ -26,7 +26,7 @@ def validate_string_prefix(generated: str) -> bool:
     if generated.endswith('"') and len(generated) == 2:
         return False
     for char in generated[1:]:
-        if ord(char) < 32 or ord(char) > 126:
+        if ord(char) < 32:
             return False
     return True
 
