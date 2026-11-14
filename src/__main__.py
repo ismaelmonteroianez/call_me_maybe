@@ -35,7 +35,7 @@ def main():
         print(functions)
         handler = LLMHandler()
         handler.load_model()
-        prompt = build_prompt(functions, prompts[0].prompt)
+        prompt = build_prompt(functions, prompts[2].prompt)
         print(prompt)
         encoded = handler.encode_prompt(prompt)
         print("Tokens del prompt:", len(encoded)) #eliminar esta linea al final
@@ -85,6 +85,9 @@ def main():
     except ValueError as e:
         print(f"Error: invalid input structure: {e}")
         sys.exit(1)
+    except KeyboardInterrupt:
+        print("\nExecution interrupted by user.")
+        sys.exit(130)
 
 if __name__ == "__main__":
     main()
