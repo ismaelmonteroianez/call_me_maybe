@@ -1,11 +1,14 @@
 import json
 import sys
 import argparse
+import copy
 import time #eliminar esta linea al final
 from pydantic import ValidationError
+import numpy as np
 from src.parser import parser
 from src.instructions import build_prompt
 from src.llm_handler import LLMHandler
+from src.state_machine import StateMachine, State
 
 
 def parse_arguments():
@@ -35,7 +38,12 @@ def main():
         print(functions)
         handler = LLMHandler()
         handler.load_model()
-        prompt = build_prompt(functions, prompts[2].prompt)
+        prompt = build_prompt(functions, prompts[0].prompt)
+        machine = StateMachine(functions)
+        token_to_id = handler.load_vocabulary()
+        id_to_token = {}
+        for token, token_id in token_to_id.items():
+            id_to_token[token_id] = token
         print(prompt)
         encoded = handler.encode_prompt(prompt)
         print("Tokens del prompt:", len(encoded)) #eliminar esta linea al final
@@ -61,15 +69,11 @@ def main():
             except json.JSONDecodeError:
                 pass
         total_time = time.perf_counter() - start_total #eliminar esta linea al final
-        print(f"\nTiempo total: {total_time:.3f} segundos")
-        print(f"Tokens generados: {len(generated_ids)}")
-        if generated_ids:
-            print(f"Tiempo medio de inferencia por token: "
-            f"{inference_time / len(generated_ids) * 1000:.2f} ms")
-        token_to_id = handler.load_vocabulary()
-        id_to_token = {}
-        for token, token_id in token_to_id.items():
-            id_to_token[token_id] = token
+        print(f"\nTiempo total: {total_time:.3f} segundos") #eliminar esta linea al final
+        print(f"Tokens generados: {len(generated_ids)}") #eliminar esta linea al final
+        if generated_ids: #eliminar esta linea al final
+            print(f"Tiempo medio de inferencia por token: " #eliminar esta linea al final
+            f"{inference_time / len(generated_ids) * 1000:.2f} ms") #eliminar esta linea al final
 
     except FileNotFoundError as e:
         print(f"Error: file not found: {e.filename}")
