@@ -38,42 +38,27 @@ def main():
         handler = LLMHandler()
         handler.load_model()
         results = []
+        start_total = time.perf_counter()
         for prompt_data in prompts:
+            start_prompt = time.perf_counter()
             prompt = build_prompt(functions, prompt_data.prompt)
             machine = StateMachine(functions)
             print(prompt)
             encoded = handler.encode_prompt(prompt)
-            print("Tokens del prompt:", len(encoded)) #eliminar esta linea al final
-            inference_time = 0.0 #eliminar esta linea al final
-            generated_ids = []
-            start_total = time.perf_counter() #eliminar esta linea al final
             generated_text = ""
             while True:
-                start_token = time.perf_counter() #eliminar esta linea al final
                 logits = np.array(handler.get_logits(encoded), dtype=float)
-                token_time = time.perf_counter() - start_token #eliminar esta linea al final
-                inference_time += token_time #eliminar esta linea al final
-                print(f"Tiempo de inferencia: {token_time * 1000:.2f} ms")
-                attempts = 0
                 while True:
                     next_id = int(np.argmax(logits))
-                    attempts += 1
                     token_text = handler.decode_prompt([next_id])
-                    print(f"State: {machine.state} | Attempts: {attempts}")
                     candidate_machine = copy.deepcopy(machine)
                     if candidate_machine.add_generated_text(token_text):
                         machine = candidate_machine
                         encoded.append(next_id)
-                        generated_ids.append(next_id)
                         generated_text += token_text
                         print(generated_text)
                         break
                     else:
-                        print(
-                        f"Rejected | State: {machine.state} | "
-                        f"ID: {next_id} | "
-                        f"Text: {repr(token_text)}"
-                        )
                         logits[next_id] = -np.inf
                 try:
                     result = json.loads(generated_text)
@@ -81,15 +66,13 @@ def main():
                         break
                 except json.JSONDecodeError:
                     pass
-            result["prompt"] = prompt_data.prompt
+            result = {"prompt": prompt_data.prompt, **result}
             results.append(result)
             print("JSON generado:", result)
-            total_time = time.perf_counter() - start_total #eliminar esta linea al final
-            print(f"\nTiempo total: {total_time:.3f} segundos") #eliminar esta linea al final
-            print(f"Tokens generados: {len(generated_ids)}") #eliminar esta linea al final
-            if generated_ids: #eliminar esta linea al final
-                print(f"Tiempo medio de inferencia por token: " #eliminar esta linea al final
-                f"{inference_time / len(generated_ids) * 1000:.2f} ms") #eliminar esta linea al final
+            prompt_time = time.perf_counter() - start_prompt
+            print(f"Prompt generation time: {prompt_time:.2f} seconds\n")
+        total_time = time.perf_counter() - start_total
+        print(f"\nTotal generation time: {total_time:.2f} seconds")
         output_dir = os.path.dirname(args.output)
         if output_dir:
             os.makedirs(output_dir, exist_ok=True)

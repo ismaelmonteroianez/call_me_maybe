@@ -40,7 +40,7 @@ def validate_string_prefix(generated: str) -> bool:
     return True
 
 def is_string_complete(generated: str) -> bool:
-    if not generated.endswith('"'):
+    if len(generated) < 2 or not generated.endswith('"'):
         return False
     escaped = False
     for char in generated[1:-1]:
