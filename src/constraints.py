@@ -92,11 +92,11 @@ def is_function_name_complete(
     return False
 
 def validate_parameters_start(generated: str) -> bool:
-    expected = ',"parameters":{'
+    expected = '","parameters":{'
     return expected.startswith(generated)
 
 def is_parameters_start_complete(generated: str) -> bool:
-    return generated == ',"parameters":{'
+    return generated == '","parameters":{'
 
 def is_parameter_name_complete(parameter_name: str,
     generated: str) -> bool:
