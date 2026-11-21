@@ -14,7 +14,10 @@ install:
 	uv sync
 
 run: install
-	uv run --no-sync python -m src
+	uv run --no-sync python -m src \
+		--functions_definition "data/input/functions_definition.json" \
+		--input "data/input/function_calling_tests.json" \
+		--output "data/output/function_calling_results.json"
 
 debug: install
 	uv run --no-sync python -m pdb -m src
