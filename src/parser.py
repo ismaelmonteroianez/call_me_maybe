@@ -3,11 +3,13 @@ import json
 
 
 def load_json(file_path: str) -> object:
+    """Load and return the contents of a JSON file."""
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
 
 def load_prompts(file_path: str) -> list[PromptInput]:
+    """Load and validate the user prompts from a JSON file."""
     data = load_json(file_path)
     if not isinstance(data, list):
         raise ValueError("Expected a JSON array")
@@ -21,6 +23,7 @@ def load_prompts(file_path: str) -> list[PromptInput]:
 
 
 def load_function_definitions(file_path: str) -> list[FunctionDefinition]:
+    """Load and validate function definitions, checking for duplicate names."""
     data = load_json(file_path)
     if not isinstance(data, list):
         raise ValueError("Expected a JSON array")
@@ -42,6 +45,7 @@ def load_function_definitions(file_path: str) -> list[FunctionDefinition]:
 def parser(input_path: str,
            functions_definition_path: str
            ) -> tuple[list[PromptInput], list[FunctionDefinition]]:
+    """Load the prompts and function definitions required by the application"""
     prompts = load_prompts(input_path)
     functions = load_function_definitions(functions_definition_path)
     return (prompts, functions)

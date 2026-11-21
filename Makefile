@@ -28,5 +28,5 @@ fclean: clean
 	rm -rf "$(UV_PROJECT_ENVIRONMENT)"
 
 lint: install
-	uv run --no-sync flake8 .
-	uv run --no-sync mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	uv run --no-sync flake8 src
+	uv run --no-sync mypy src --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs

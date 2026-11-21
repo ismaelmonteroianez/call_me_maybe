@@ -12,7 +12,14 @@ from src.llm_handler import LLMHandler
 from src.state_machine import StateMachine
 
 
+class NoValidTokenError(Exception):
+    """Raised when no valid token can be generated."""
+    pass
+
+
 def parse_arguments() -> argparse.Namespace:
+    """Parse the command-line arguments for input,
+    function definitions and output paths."""
     argument_parser = argparse.ArgumentParser(
         description="Function calling with LLMs"
     )
@@ -35,6 +42,8 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def main() -> None:
+    """Load the input data, generate function calls
+    with the language model and save the results."""
     args = parse_arguments()
     try:
         prompts, functions = parser(
@@ -55,6 +64,8 @@ def main() -> None:
                 logits = np.array(handler.get_logits(encoded), dtype=float)
                 while True:
                     next_id = int(np.argmax(logits))
+                    if logits[next_id] == -np.inf:
+                        raise NoValidTokenError("No valid tokens available")
                     token_text = handler.decode_prompt([next_id])
                     candidate_machine = copy.deepcopy(machine)
                     if candidate_machine.add_generated_text(token_text):
@@ -96,6 +107,9 @@ def main() -> None:
         sys.exit(1)
     except ValueError as e:
         print(f"Error: invalid input structure: {e}")
+        sys.exit(1)
+    except NoValidTokenError as e:
+        print(f"Error during generation: {e}")
         sys.exit(1)
     except KeyboardInterrupt:
         print("\nExecution interrupted by user.")

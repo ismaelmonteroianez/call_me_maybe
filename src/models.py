@@ -3,23 +3,27 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class PromptInput(BaseModel):
+    """Represent a user prompt loaded from the input file."""
     model_config = ConfigDict(extra="forbid")
     prompt: str = Field(min_length=1)
 
     @field_validator("prompt", mode="before")
     @classmethod
     def strip_strings(cls, value: Any) -> Any:
+        """Remove leading and trailing whitespace from the prompt."""
         if isinstance(value, str):
             return value.strip()
         return value
 
 
 class TypeDefinition(BaseModel):
+    """Define the data type expected by a function parameter or return value"""
     model_config = ConfigDict(extra="forbid")
-    type: Literal["string", "number", "boolean"]
+    type: Literal["string", "number", "integer", "boolean"]
 
 
 class FunctionDefinition(BaseModel):
+    """Represent a function and its parameter and return type definitions."""
     model_config = ConfigDict(extra="forbid")
     name: str = Field(min_length=1)
     description: str = Field(min_length=1)
@@ -29,6 +33,7 @@ class FunctionDefinition(BaseModel):
     @field_validator("name", "description", mode="before")
     @classmethod
     def strip_strings(cls, value: Any) -> Any:
+        """Remove leading and trailing whitespace from string values."""
         if isinstance(value, str):
             return value.strip()
         return value
@@ -36,6 +41,7 @@ class FunctionDefinition(BaseModel):
     @field_validator("parameters", mode="before")
     @classmethod
     def validate_parameter_names(cls, value: Any) -> Any:
+        """Clean parameter names and reject empty or duplicate names."""
         if isinstance(value, dict):
             cleaned_parameters = {}
             for name, definition in value.items():

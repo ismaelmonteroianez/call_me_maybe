@@ -3,6 +3,8 @@ from src.models import FunctionDefinition
 
 
 def build_prompt(functions: list[FunctionDefinition], user_prompt: str) -> str:
+    """Build the model prompt with the available
+    function definitions and the user's request."""
     instructions = (
         "Choose the most appropriate function for the user's request.\n"
         "Extract its arguments from the request. Do not execute it.\n"
