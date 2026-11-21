@@ -1,13 +1,14 @@
-from typing import Literal
+from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class PromptInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     prompt: str = Field(min_length=1)
+
     @field_validator("prompt", mode="before")
     @classmethod
-    def strip_strings(cls, value):
+    def strip_strings(cls, value: Any) -> Any:
         if isinstance(value, str):
             return value.strip()
         return value
@@ -27,14 +28,14 @@ class FunctionDefinition(BaseModel):
 
     @field_validator("name", "description", mode="before")
     @classmethod
-    def strip_strings(cls, value):
+    def strip_strings(cls, value: Any) -> Any:
         if isinstance(value, str):
             return value.strip()
         return value
 
     @field_validator("parameters", mode="before")
     @classmethod
-    def validate_parameter_names(cls, value):
+    def validate_parameter_names(cls, value: Any) -> Any:
         if isinstance(value, dict):
             cleaned_parameters = {}
             for name, definition in value.items():

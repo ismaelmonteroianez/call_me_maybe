@@ -40,7 +40,8 @@ def load_function_definitions(file_path: str) -> list[FunctionDefinition]:
 
 
 def parser(input_path: str,
-    functions_definition_path: str) -> tuple[list[PromptInput], list[FunctionDefinition]]:
+           functions_definition_path: str
+           ) -> tuple[list[PromptInput], list[FunctionDefinition]]:
     prompts = load_prompts(input_path)
     functions = load_function_definitions(functions_definition_path)
     return (prompts, functions)

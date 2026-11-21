@@ -3,7 +3,7 @@ import sys
 import argparse
 import copy
 import os
-import time #eliminar esta linea al final
+import time
 from pydantic import ValidationError
 import numpy as np
 from src.parser import parser
@@ -12,24 +12,29 @@ from src.llm_handler import LLMHandler
 from src.state_machine import StateMachine
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     argument_parser = argparse.ArgumentParser(
-    description="Function calling with LLMs")
+        description="Function calling with LLMs"
+    )
     argument_parser.add_argument(
-    "--input",
-    default="data/input/function_calling_tests.json",
-    help="Path to the input prompts JSON file")
+        "--input",
+        default="data/input/function_calling_tests.json",
+        help="Path to the input prompts JSON file"
+    )
     argument_parser.add_argument(
-    "--functions_definition",
-    default="data/input/functions_definition.json",
-    help="Path to the function definitions JSON file")
+        "--functions_definition",
+        default="data/input/functions_definition.json",
+        help="Path to the function definitions JSON file"
+    )
     argument_parser.add_argument(
-    "--output",
-    default="data/output/function_calling_results.json",
-    help="Path to the output JSON file")
+        "--output",
+        default="data/output/function_calling_results.json",
+        help="Path to the output JSON file"
+    )
     return argument_parser.parse_args()
 
-def main():
+
+def main() -> None:
     args = parse_arguments()
     try:
         prompts, functions = parser(
@@ -95,6 +100,7 @@ def main():
     except KeyboardInterrupt:
         print("\nExecution interrupted by user.")
         sys.exit(130)
+
 
 if __name__ == "__main__":
     main()

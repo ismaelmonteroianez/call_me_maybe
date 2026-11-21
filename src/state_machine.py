@@ -2,6 +2,7 @@ from enum import Enum
 from src.models import FunctionDefinition, TypeDefinition
 from src import constraints
 
+
 class State(Enum):
     START = 1
     NAME = 2
@@ -88,10 +89,11 @@ class StateMachine:
                 self.generated_name += char
 
             elif self.state in (
-            State.PARAMETERS_START,
-            State.PARAMETER_NAME,
-            State.PARAMETER_VALUE,
-            State.PARAMETERS_END):
+                               State.PARAMETERS_START,
+                               State.PARAMETER_NAME,
+                               State.PARAMETER_VALUE,
+                               State.PARAMETERS_END
+                               ):
                 self.generated_parameters += char
 
             if not self.validate():
@@ -101,19 +103,23 @@ class StateMachine:
                     self.change_state(State.NAME)
             elif self.state == State.NAME:
                 if constraints.is_function_name_complete(
-                self.functions, self.current_fragment):
+                                                        self.functions,
+                                                        self.current_fragment
+                                                        ):
                     self.select_function(self.current_fragment)
 
             elif self.state == State.PARAMETERS_START:
                 if constraints.is_parameters_start_complete(
-                self.current_fragment):
+                        self.current_fragment):
                     self.change_state(State.PARAMETER_NAME)
 
             elif self.state == State.PARAMETER_NAME:
                 parameter_name, _ = self.get_current_parameter()
 
                 if constraints.is_parameter_name_complete(
-                parameter_name, self.current_fragment):
+                                                         parameter_name,
+                                                         self.current_fragment
+                                                         ):
                     self.change_state(State.PARAMETER_VALUE)
             elif self.state == State.PARAMETER_VALUE:
                 _, definition = self.get_current_parameter()
@@ -124,16 +130,15 @@ class StateMachine:
                     if constraints.is_string_complete(self.current_fragment):
                         self.next_parameter()
             elif self.state == State.PARAMETERS_END:
-                has_more_parameters = self.parameter_index < len(self.parameters)
+                has_more_parameters = (
+                    self.parameter_index < len(self.parameters)
+                )
 
                 if constraints.is_parameters_end_complete(
-                self.current_fragment, has_more_parameters):
+                                self.current_fragment,
+                                has_more_parameters):
                     if has_more_parameters:
                         self.change_state(State.PARAMETER_NAME)
                     else:
                         self.change_state(State.END)
-            elif self.state == State.END:
-                if constraints.is_end_complete(self.current_fragment):
-                    # Aquí termina la generación.
-                    pass
         return True

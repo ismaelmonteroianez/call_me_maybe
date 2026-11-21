@@ -1,26 +1,33 @@
 from src.models import FunctionDefinition
 import json
 
+
 def validate_start(generated: str) -> bool:
     expected = '{"name":"'
     return expected.startswith(generated)
 
+
 def is_start_complete(generated: str) -> bool:
     return generated == '{"name":"'
 
+
 def validate_function_name_prefix(
-    functions: list[FunctionDefinition],
-    generated: str) -> bool:
+                functions: list[FunctionDefinition],
+                generated: str
+                ) -> bool:
     for function in functions:
         if function.name.startswith(generated):
             return True
     return False
 
+
 def validate_parameter_name_prefix(
-    parameter_name: str,
-    generated: str) -> bool:
-        expected = json.dumps(parameter_name) + ":"
-        return expected.startswith(generated)
+                parameter_name: str,
+                generated: str
+                ) -> bool:
+    expected = json.dumps(parameter_name) + ":"
+    return expected.startswith(generated)
+
 
 def validate_string_prefix(generated: str) -> bool:
     if not generated.startswith('"'):
@@ -39,6 +46,7 @@ def validate_string_prefix(generated: str) -> bool:
             return False
     return True
 
+
 def is_string_complete(generated: str) -> bool:
     if len(generated) < 2 or not generated.endswith('"'):
         return False
@@ -51,6 +59,7 @@ def is_string_complete(generated: str) -> bool:
         elif char == '"':
             return False
     return True
+
 
 def validate_number_prefix(generated: str) -> bool:
     if generated.startswith("-"):
@@ -69,12 +78,14 @@ def validate_number_prefix(generated: str) -> bool:
         return False
     return True
 
+
 def is_number_complete(generated: str) -> bool:
     try:
         value = json.loads(generated)
         return isinstance(value, (int, float)) and not isinstance(value, bool)
     except json.JSONDecodeError:
         return False
+
 
 def validate_boolean_prefix(generated: str) -> bool:
     if "true".startswith(generated):
@@ -83,38 +94,49 @@ def validate_boolean_prefix(generated: str) -> bool:
         return True
     return False
 
+
 def is_function_name_complete(
-    functions: list[FunctionDefinition],
-    generated: str) -> bool:
+                functions: list[FunctionDefinition],
+                generated: str
+                ) -> bool:
     for function in functions:
         if function.name == generated:
             return True
     return False
 
+
 def validate_parameters_start(generated: str) -> bool:
     expected = '","parameters":{'
     return expected.startswith(generated)
 
+
 def is_parameters_start_complete(generated: str) -> bool:
     return generated == '","parameters":{'
 
+
 def is_parameter_name_complete(parameter_name: str,
-    generated: str) -> bool:
-        return generated == json.dumps(parameter_name) + ":"
+                               generated: str) -> bool:
+    return generated == json.dumps(parameter_name) + ":"
+
 
 def is_boolean_complete(generated: str) -> bool:
     return generated in ("true", "false")
 
-def validate_parameters_end(generated: str, has_more_parameters: bool) -> bool:
-        expected = "," if has_more_parameters else "}"
-        return expected.startswith(generated)
 
-def is_parameters_end_complete(generated: str, has_more_parameters: bool) -> bool:
+def validate_parameters_end(generated: str, has_more_parameters: bool) -> bool:
+    expected = "," if has_more_parameters else "}"
+    return expected.startswith(generated)
+
+
+def is_parameters_end_complete(generated: str,
+                               has_more_parameters: bool) -> bool:
     expected = "," if has_more_parameters else "}"
     return generated == expected
 
+
 def validate_end(generated: str) -> bool:
     return "}".startswith(generated)
+
 
 def is_end_complete(generated: str) -> bool:
     return generated == "}"

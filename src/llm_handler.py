@@ -1,13 +1,15 @@
-from llm_sdk import Small_LLM_Model
+from llm_sdk import Small_LLM_Model  # type: ignore[attr-defined]
 import json
+from typing import Any
+
 
 class LLMHandler:
 
     def __init__(self, model_name: str = "Qwen/Qwen3-0.6B"):
         self.model_name = model_name
-        self.model = None
+        self.model: Any = None
 
-    def load_model(self):
+    def load_model(self) -> None:
         self.model = Small_LLM_Model(self.model_name)
 
     def encode_prompt(self, prompt: str) -> list[int]:
@@ -20,11 +22,11 @@ class LLMHandler:
     def get_vocab_path(self) -> str:
         return self.model.get_path_to_vocab_file()
 
-    def decode_prompt(self, prompt: str):
+    def decode_prompt(self, prompt: list[int]) -> str:
         decode = self.model.decode(prompt)
         return decode
 
-    def load_vocabulary(self):
+    def load_vocabulary(self) -> dict[str, int]:
         tokenizer_path = self.model.get_path_to_tokenizer_file()
         with open(tokenizer_path, "r", encoding="utf-8") as file:
             tokenizer_data = json.load(file)

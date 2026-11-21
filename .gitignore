@@ -2,3 +2,4 @@ __pycache__
 tokens_especiales
 output_ejemplo.txt
 .venv
+.mypy_cache
