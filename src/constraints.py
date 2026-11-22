@@ -17,7 +17,8 @@ def validate_function_name_prefix(
                 functions: list[FunctionDefinition],
                 generated: str
                 ) -> bool:
-    """Check whether the generated text is a prefix of an available function name."""
+    """Check whether the generated text
+    is a prefix of an available function name."""
     for function in functions:
         if function.name.startswith(generated):
             return True
@@ -28,7 +29,8 @@ def validate_parameter_name_prefix(
                 parameter_name: str,
                 generated: str
                 ) -> bool:
-    """Check whether the generated text is a valid prefix of a parameter name."""
+    """Check whether the generated text
+    is a valid prefix of a parameter name."""
     expected = json.dumps(parameter_name) + ":"
     return expected.startswith(generated)
 
@@ -139,7 +141,8 @@ def is_function_name_complete(
 
 
 def validate_parameters_start(generated: str) -> bool:
-    """Check whether the generated text matches the expected parameters section prefix."""
+    """Check whether the generated text matches
+    the expected parameters section prefix."""
     expected = '","parameters":{'
     return expected.startswith(generated)
 
@@ -156,12 +159,12 @@ def is_parameter_name_complete(parameter_name: str,
 
 
 def is_boolean_complete(generated: str) -> bool:
-    """Check whether the generated text is a complete boolean value."""
+    """Check whether the generated text is a complete boolean value"""
     return generated in ("true", "false")
 
 
 def validate_parameters_end(generated: str, has_more_parameters: bool) -> bool:
-    """Check whether the generated text is a valid parameters section ending."""
+    """Check whether the generated text is a valid parameters section ending"""
     expected = "," if has_more_parameters else "}"
     return expected.startswith(generated)
 

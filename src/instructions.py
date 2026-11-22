@@ -6,11 +6,12 @@ def build_prompt(functions: list[FunctionDefinition], user_prompt: str) -> str:
     """Build the model prompt with the available
     function definitions and the user's request."""
     instructions = (
-        "Choose the most appropriate function for the user's request.\n"
+        "Choose one of the available functions for the user's request.\n"
         "Extract its arguments from the request. Do not execute it.\n"
         'Return only a JSON object with the keys "name" and '
         '"parameters", in that order.\n'
-        "Return compact JSON on a single line.\n"
+        "Write compact JSON on a single line, without spaces outside "
+        "string values or leading or trailing whitespace.\n"
         "Do not add extra keys, explanations or Markdown.\n"
         "Use the exact function name and parameter names.\n"
         "Respect the declared parameter types.\n"

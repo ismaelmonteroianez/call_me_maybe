@@ -57,7 +57,7 @@ def main() -> None:
             start_prompt = time.perf_counter()
             prompt = build_prompt(functions, prompt_data.prompt)
             machine = StateMachine(functions)
-            print(prompt)
+            print(prompt_data.prompt)
             encoded = handler.encode_prompt(prompt)
             generated_text = ""
             while True:
