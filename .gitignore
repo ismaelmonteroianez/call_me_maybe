@@ -1,5 +1,5 @@
 __pycache__
-tokens_especiales
+tokens_especiales.txt
 output_ejemplo.txt
 .venv
 .mypy_cache

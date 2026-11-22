@@ -179,8 +179,3 @@ def is_parameters_end_complete(generated: str,
 def validate_end(generated: str) -> bool:
     """Check whether the generated text matches the expected JSON ending."""
     return "}".startswith(generated)
-
-
-def is_end_complete(generated: str) -> bool:
-    """Check whether the final JSON closing brace has been generated."""
-    return generated == "}"
